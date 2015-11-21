@@ -1,5 +1,6 @@
 package markhu.sharedpreferences;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,25 +9,39 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String PREF_NAME = "last word";
+    private static final String KEY_WORD = "KEY_WORD";
+
+    private SharedPreferences mPrefs;
+    private EditText mWord;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        mPrefs = getSharedPreferences(PREF_NAME,MODE_PRIVATE);
+        mWord = (EditText) findViewById(R.id.etPreference);
+
     }
+
+    public void onClick(View view){
+        switch(view.getId()){
+            case R.id.save_preferences:
+                SharedPreferences.Editor editor = mPrefs.edit();
+                editor.putString(KEY_WORD, mWord.getText().toString());
+                editor.commit();
+                break;
+            case R.id.read_preferences:
+                Toast.makeText(view.getContext(),mPrefs.getString(KEY_WORD,"No word yet"),Toast.LENGTH_LONG).show();
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
